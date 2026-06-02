@@ -1,1 +1,1 @@
-# RESTful ABAP Programming Language (RAP) Demonstration
+# RESTful ABAP Programming Model (RAP) Demonstration
