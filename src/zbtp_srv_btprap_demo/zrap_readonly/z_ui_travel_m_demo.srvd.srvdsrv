@@ -1,0 +1,5 @@
+@EndUserText.label: 'Travel Service Definition'
+define service z_ui_travel_m_demo {
+  expose zr_traveldemo  as Travel;
+  expose zr_bookingdemo as Booking;
+}

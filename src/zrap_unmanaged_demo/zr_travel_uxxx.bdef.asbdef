@@ -1,0 +1,62 @@
+unmanaged;
+with draft;
+
+define behavior for zr_travel_uxxx alias Travel
+implementation in class zbp_r_travel_uxxx unique
+lock master
+total etag LastChangedAt
+draft table ztravel_draftxxx
+etag master Lastchangedat
+early numbering
+
+{
+  create;
+  update;
+  delete;
+  association _Booking { create; with draft; }
+
+  field ( readonly ) TravelID;
+
+  mapping for /dmo/travel control /dmo/s_travel_intx
+   {
+      TravelId      = TRAVEL_ID;
+      AgencyId      = AGENCY_ID;
+      CustomerId    = CUSTOMER_ID;
+      BeginDate     = BEGIN_DATE;
+      EndDate       = END_DATE;
+      BookingFee    = BOOKING_FEE;
+      TotalPrice    = TOTAL_PRICE;
+      CurrencyCode  = CURRENCY_CODE;
+      Description   = DESCRIPTION;
+      Status        = STATUS;
+      Createdby     = CREATEDBY;
+      Createdat     = CREATEDAT;
+      Lastchangedby = LASTCHANGEDBY;
+      Lastchangedat = LASTCHANGEDAT;
+    } }
+
+define behavior for zr_booking_uxxx alias Booking
+implementation in class zbp_r_booking_uxxx unique
+draft table zbook_draftxxx
+lock dependent by _Travel
+etag dependent by _Travel
+{
+  update;
+  delete;
+  association _Travel;
+
+  field ( readonly ) TravelID, BookingID;
+
+  mapping for /dmo/booking control /dmo/s_booking_intx
+    {
+      TravelId     = TRAVEL_ID;
+      BookingId    = BOOKING_ID;
+      BookingDate  = BOOKING_DATE;
+      CustomerId   = CUSTOMER_ID;
+      CarrierId    = CARRIER_ID;
+      ConnectionId = CONNECTION_ID;
+      FlightDate   = FLIGHT_DATE;
+      FlightPrice  = FLIGHT_PRICE;
+      CurrencyCode = CURRENCY_CODE;
+    }
+}

@@ -1,0 +1,85 @@
+managed;
+with draft;
+
+define behavior for zr_travelxxx alias Travel
+implementation in class zbp_travel_xxx unique
+persistent table ztravel_axxx
+draft table ztravel_dxxx
+lock master
+total etag LastChangedAt
+etag master LocalLastChangedAt
+authorization master ( global  )
+{
+  create;
+  update;
+  delete;
+  association _Booking { create ( features : instance ); with draft; }
+
+  field (numbering : managed, readonly) TravelUUID;
+  field ( readonly ) TravelId;
+  field ( features : instance ) BookingFee;
+
+  determination calculateTravelID   on save   { create; }
+  validation validateDates  on save { field BeginDate, EndDate; create; }
+
+  draft determine action Prepare  {
+  validation validateDates; }
+
+  action ( features : instance ) acceptTravel result [1] $self;
+  action ( features : instance ) rejectTravel result [1] $self;
+
+   mapping for ztravel_axxx {
+    TravelUUID         = travel_uuid;
+    TravelID           = travel_id;
+    AgencyID           = agency_id;
+    CustomerID         = customer_id;
+    BeginDate          = begin_date;
+    EndDate            = end_date;
+    BookingFee         = booking_fee;
+    TotalPrice         = total_price;
+    CurrencyCode       = currency_code;
+    Description        = description;
+    TravelStatus       = overall_status;
+    CreatedBy          = created_by;
+    CreatedAt          = created_at;
+    LastChangedBy      = last_changed_by;
+    LastChangedAt      = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+
+}
+}
+
+
+define behavior for zr_bookingxxx alias Booking
+implementation in class zbp_travel_xxx unique
+persistent table zbooking_axxx
+draft table zbooking_dxxx
+lock dependent by _Travel
+etag dependent by _Travel
+authorization dependent by _Travel
+
+{
+  update;
+  delete;
+  field ( readonly ) TravelUUID;
+  association _Travel { with draft; }
+
+  field (numbering : managed, readonly) BookingUUID;
+  field ( readonly ) BookingId;
+  determination calculateBookingID  on modify { create; }
+
+  mapping for zbooking_axxx  {
+    BookingUUID        = booking_uuid;
+    TravelUUID         = travel_uuid;
+    BookingID          = booking_id;
+    BookingDate        = booking_date;
+    CustomerID         = customer_id;
+    CarrierID          = carrier_id;
+    ConnectionID       = connection_id;
+    FlightDate         = flight_date;
+    FlightPrice        = flight_price;
+    CurrencyCode       = currency_code;
+    CreatedBy          = created_by;
+    LastChangedBy      = last_changed_by;
+  }
+}

@@ -1,0 +1,52 @@
+managed implementation in class ZBP_R_AGENCYXXX unique;
+strict ( 2 );
+with draft;
+extensible;
+define behavior for ZR_AGENCYXXX alias Agency
+persistent table ZAGENCYXXX
+extensible
+draft table ZAGENCYXXX_D
+etag master LocalLastChanged
+lock master total etag LastChanged
+authorization master( global )
+{
+  field ( mandatory : create )
+   Agencyid;
+
+  field ( readonly )
+   LocalLastChanged,
+   LastChanged,
+   UserLastChanged,
+   CreatedBy;
+
+  field ( readonly : update )
+   Agencyid;
+
+
+  create;
+  update;
+  delete;
+
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for ZAGENCYXXX corresponding extensible
+  {
+    Agencyid = AGENCYID;
+    Name = NAME;
+    Street = STREET;
+    Postalcode = POSTALCODE;
+    City = CITY;
+    Country = COUNTRY;
+    Phonenumber = PHONENUMBER;
+    Webaddress = WEBADDRESS;
+    LocalLastChanged = LOCAL_LAST_CHANGED;
+    LastChanged = LAST_CHANGED;
+    UserLastChanged = USER_LAST_CHANGED;
+    CreatedBy = CREATED_BY;
+  }
+
+}
